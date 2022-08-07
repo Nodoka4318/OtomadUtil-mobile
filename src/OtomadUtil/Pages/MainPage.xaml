@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+	xmlns:local="clr-namespace:OtomadUtil"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="OtomadUtil.MainPage"
+	BackgroundColor="Color.White">
+	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<Button x:Name="toolsButton" 
+		Grid.Row="1" 
+		TextColor="Color.LightBlue"
+		FontSize="50"
+		BackgroundColor="Color.WhiteSmoke"
+		BorderColor="Color.LightBlue"
+		BorderWidth="3"/>
+		<Button x:Name="createVidButton" 
+		Grid.Row="3"
+		TextColor="Color.LightBlue"
+		FontSize="50"
+		BackgroundColor="Color.WhiteSmoke"
+		BorderColor="Color.LightBlue"
+		BorderWidth="3"/>
+	</Grid>
+</ContentPage>
