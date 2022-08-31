@@ -18,17 +18,24 @@ namespace OtomadUtil.Media {
 		private MediaMetadataRetriever _retriever;
 		private bool _caching;
 		private ImageSource[] _imageSourceCache;
-
+		
+		
+		//private ImageSource sr;
+		
+		
 		public Video(string path, bool caching) {
 			_info = VideoInfo.FromPath(path);
 			_retriever = new MediaMetadataRetriever();
 			_retriever.SetDataSource(path);
-			var m = new MediaPlayer();
+			var m = new MediaExtractor();
+			m.SetDataSource(path);
 			_caching = caching;
 
 			if (_caching) {
 				_imageSourceCache = new ImageSource[_info.FrameLength];
 			}
+			
+			//sr = GetFrameAsImageSource(2, 100);
 		}
 
 		public Bitmap GetFrame(int index) {
@@ -44,10 +51,15 @@ namespace OtomadUtil.Media {
 		}
 
 		public ImageSource GetFrameAsImageSource(int index, int quality) {
+			
 			if (_imageSourceCache[index] == null) {
 				_imageSourceCache[index] = GetFrame(index).ToImageSource(quality);
 			}
+			
 			return _imageSourceCache[index];
+			
+			//var a = GetFrame(0);
+			//return sr;
 		}
 
 		public void SaveFrameAsPng(int index, string folder, string filename) {
@@ -62,13 +74,13 @@ namespace OtomadUtil.Media {
 
 		}
 
-		public void InitializeBitmapArray() {
+		public void InitializeImageSourceArray() {
 			_bitmapArray = new Bitmap[_info.FrameLength];
 			for (int i = 0; i < _info.FrameLength; i++) {
-				_bitmapArray[i] = GetFrame(i);
+				//_imageSourceCache[i] = GetFrameAsImageSource(i, 0);
 			}
 
-			_isBitmapArrayInitialized = true;
+			//_isBitmapArrayInitialized = true;
 		}
 	}
 }

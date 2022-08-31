@@ -55,7 +55,7 @@ namespace OtomadUtil {
 
 		private void InitVideo(string path) {
 			_video = new Video(path, true);
-			//_video.InitializeBitmapArray();
+			_video.InitializeImageSourceArray();
 			preview.Source = _video.GetFrameAsImageSource(0, 100);
 			pv_slider.Value = 0;
 			pv_slider.Minimum = 0;
