@@ -7,8 +7,9 @@ namespace OtomadUtil.Core {
 		public List<char> Source { get; private set; }
 		public int Length { get; private set; }
 		public int Bpm { get; private set; }
+		public int Fps { get; private set; }
 
-		public Score(string source, int bpm) {
+		public Score(string source, int bpm, int fps) {
 			bool isComment = false;
 			var _tempLits = new List<char>();
 			//コメントアウト飛ばし読み 
@@ -40,11 +41,12 @@ namespace OtomadUtil.Core {
 			).ToList();
 			this.Length = this.Source.Count;
 			this.Bpm = bpm;
+			this.Fps = fps;
 		}
 
 
 
-		public char? GetChar(int index) {
+		public char GetChar(int index) {
 			if (index > Length || index < 0)
 				throw new InvalidOperationException($"failed in getting char at {index}");
 			return Source[index];
@@ -66,20 +68,41 @@ namespace OtomadUtil.Core {
 				return _temp;
 			}
 		}
-		
-		public static List<ScoreToken> Tokenize(string src, int bpm) {
-			var score = new Score(src, bpm);
+
+		public static List<ScoreToken> Tokenize(string src, int bpm, int fps) {
+			var score = new Score(src, bpm, fps);
 			var tokens = new List<ScoreToken>();
-			
+
 			for (int i = 0; i < score.Length; i++) {
 				var note = score.GetChar(i);
-				
-				// TODO
+
+				int ext = 1; // how many times current note needs to extend
+				if (note != '-' && i + 1 < score.Length) {
+					char hyc = score.GetChar(i + 1);
+					while (hyc == '-' && i + ext < score.Length) {
+						ext++;
+						hyc = score.GetChar(i + ext);
+					}
+					i += ext;
+				} else {
+					throw new Exception($"invalid note has been read at {i}, val:{note.ToString()}");
+				}
+
+				var notelen = GetNoteLength(note) * ext;
+				var notetype = GetNoteType(note);
+				var framelen = score.GetActualFrameLength(notelen);
+
+				tokens.Add(new ScoreToken(notetype, framelen, notelen));
 			}
-			
+
 			return tokens;
 		}
-		
+
+		public double GetActualFrameLength(double notelen) {
+			double framePerBeat = Fps * 60 / Bpm;
+			return framePerBeat * notelen;
+		}
+
 		public static double GetNoteLength(char c) {
 			double l;
 			switch (c) {
@@ -100,7 +123,7 @@ namespace OtomadUtil.Core {
 			}
 			return l;
 		}
-		
+
 		public static double GetNoteType(char c) {
 			TokenType tt;
 			switch (c) {
