@@ -104,6 +104,10 @@ namespace OtomadUtil.Core {
 			tokens.Reverse();
 			return tokens;
 		}
+		
+		public List<ScoreToken> Tokenize() {
+			return Tokenize(Source, Bpm, Fps); // ふつうじっそうぎゃくじゃね??
+		}
 
 		public double GetActualFrameLength(double notelen) {
 			double framePerBeat = Fps * 60 / Bpm;
