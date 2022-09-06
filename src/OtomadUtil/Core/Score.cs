@@ -76,25 +76,32 @@ namespace OtomadUtil.Core {
 			for (int i = 0; i < score.Length; i++) {
 				var note = score.GetChar(i);
 
-				int ext = 1; // how many times current note needs to extend
-				if (note != '-' && i + 1 < score.Length) {
-					char hyc = score.GetChar(i + 1);
-					while (hyc == '-' && i + ext < score.Length) {
-						ext++;
-						hyc = score.GetChar(i + ext);
+				int ext = 0; // how many times current note needs to be extended
+				if (note != '-') {
+					if (i + 1 < score.Length) {
+						char hyc = score.GetChar(i + 1);
+						while (hyc == '-') {
+							ext++;
+							if (i + ext + 1 < score.Length) {
+								hyc = score.GetChar(i + ext + 1);
+							} else {
+								break;
+							}
+						}
 					}
 					i += ext;
 				} else {
 					throw new Exception($"invalid note has been read at {i}, val:{note.ToString()}");
 				}
 
-				var notelen = GetNoteLength(note) * ext;
+				var notelen = GetNoteLength(note) * ((double)ext + 1.0);
 				var notetype = GetNoteType(note);
 				var framelen = score.GetActualFrameLength(notelen);
 
 				tokens.Add(new ScoreToken(notetype, framelen, notelen));
 			}
-
+			
+			tokens.Reverse();
 			return tokens;
 		}
 
@@ -124,7 +131,7 @@ namespace OtomadUtil.Core {
 			return l;
 		}
 
-		public static double GetNoteType(char c) {
+		public static TokenType GetNoteType(char c) {
 			TokenType tt;
 			switch (c) {
 				case 'd':
