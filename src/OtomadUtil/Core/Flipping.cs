@@ -24,12 +24,35 @@ namespace OtomadUtil.Core {
 			}
 			
 			int range = max - min + 1;
-			double div = (double)range / (double)score.Fps; // TODO
+			double div;
 			var tokens = score.Tokenize();
 			
 			for (int i = 0; i < tokens.Count; i++) {
 				var t = tokens[i];
-				// TODO
+				var temp = new List<int>();
+				div = (double)range / t.actualFrameLength;
+				
+				if (t.type == TokenType.S) {
+					if (findex.Count <= 0)
+						throw new InvalidOperationException("do not start notes from -");
+					
+					var aframe = temp.Last();
+					for (double d = min; Math.Floor(d) <= max; d += div) {
+						temp.Add(aframe);
+					}
+					
+					continue;
+				}
+				
+				if (t.type == TokenType.L)
+					div = -div;
+					
+				for (double d = min; Math.Floor(d) <= max; d += Math.Abs(div)) {
+					var lframe = temp.Count <= 0 ? findex.Last() : temp.Last();
+					temp.Add((int)Math.Round((double)lframe + div));
+				}
+				
+				findex.AddRange(temp);
 			}
 			
 			return findex.ToArray();

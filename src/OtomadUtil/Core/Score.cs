@@ -106,7 +106,7 @@ namespace OtomadUtil.Core {
 		}
 		
 		public List<ScoreToken> Tokenize() {
-			return Tokenize(Source, Bpm, Fps); // ふつうじっそうぎゃくじゃね??
+			return Tokenize(new string(Source.ToArray()), Bpm, Fps); // ふつうじっそうぎゃくじゃね??
 		}
 
 		public double GetActualFrameLength(double notelen) {
